@@ -1,0 +1,13 @@
+services:
+  isolated-browser:
+    build: .
+    ports:
+      - "6080:6080"
+    shm_size: 1g
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp

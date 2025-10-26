@@ -1,21 +1,24 @@
 FROM debian:bookworm-slim
 
+# Create dedicated user
+RUN useradd -m firefox
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    wget curl gnupg2 ca-certificates supervisor \
-    xvfb fluxbox x11vnc novnc websockify \
-    chromium chromium-driver \
+    firefox-esr xvfb x11vnc novnc websockify fluxbox \
+    fonts-liberation fonts-dejavu \
+    supervisor curl dbus-x11 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set display env
-ENV DISPLAY=:99
-ENV CHROME_FLAGS="--no-sandbox --disable-dev-shm-usage --disable-gpu --disable-software-rasterizer --headless=new --remote-debugging-port=9222"
-
-# Copy startup script
+# Copy start script as root
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Expose ports
-EXPOSE 6080
+# Switch to dedicated user at the end
+USER firefox
+ENV HOME=/home/firefox
+ENV DISPLAY=:99
+ENV MOZILLA_PROFILE=$HOME/.mozilla
 
+EXPOSE 6080
 CMD ["/start.sh"]

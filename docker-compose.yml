@@ -11,3 +11,9 @@ services:
       - ALL
     tmpfs:
       - /tmp
+      - /home/firefox/.mozilla
+    environment:
+      - TZ=UTC
+      - DISPLAY=:99
+    mem_limit: 1g
+    pids_limit: 1000

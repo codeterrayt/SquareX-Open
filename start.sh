@@ -1,17 +1,21 @@
 #!/bin/bash
 set -e
 
-# Start virtual display
-Xvfb :99 -screen 0 1280x800x16 &
+# Ensure profile directory exists
+mkdir -p $MOZILLA_PROFILE
+export MOZILLA_PROFILE
 
-# Start window manager (optional, for UI)
+# Start virtual display
+Xvfb :99 -screen 0 1920x1080x24 &
+
+# Start lightweight window manager
 fluxbox &
 
-# Start Chrome in background (non-headless for VNC)
-chromium --no-sandbox --disable-dev-shm-usage --disable-gpu --remote-debugging-port=9222 &
+# Launch Firefox in kiosk mode
+firefox-esr --profile $MOZILLA_PROFILE --kiosk "duckduckgo.com" &
 
-# Start VNC server on :99
+# Start VNC server
 x11vnc -display :99 -nopw -forever -shared -rfbport 5900 &
 
-# Start noVNC websockify
+# Start noVNC web proxy
 websockify --web=/usr/share/novnc/ 6080 localhost:5900

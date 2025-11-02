@@ -13,7 +13,8 @@ export DISPLAY=:99
 fluxbox &
 
 # Launch Firefox in kiosk mode
-firefox-esr --profile "$MOZILLA_PROFILE" --kiosk "https://duckduckgo.com" &
+# --kiosk
+firefox-esr --profile "$MOZILLA_PROFILE"  "https://duckduckgo.com" &
 
 # Start VNC server with dynamic resizing
 x11vnc -display :99 \

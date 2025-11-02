@@ -20,6 +20,24 @@ ENV HOME=/home/firefox
 ENV DISPLAY=:99
 ENV MOZILLA_PROFILE=$HOME/.mozilla
 
+USER root
+# Secure noVNC folder
+RUN cat <<'EOF' >/usr/share/novnc/.htaccess
+# Disable directory listing
+Options -Indexes
+
+# Redirect all requests to vnc.html
+DirectoryIndex vnc.html
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^.*$ /vnc.html [L]
+EOF
+
+# Ensure mod_rewrite rules can apply if served under Apache-style behavior
+RUN ln -sf /usr/share/novnc/vnc.html /usr/share/novnc/index.html
+
+USER firefox
+
 # Expose noVNC port
 EXPOSE 6080
 
